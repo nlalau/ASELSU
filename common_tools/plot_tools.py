@@ -9,8 +9,8 @@ import numpy as np
 from datetime import datetime,timedelta
 from scipy.interpolate import griddata,interp1d
 
-from ASELSU.specific_tools.covariance_matrix import make_covariance_matrix
-from ASELSU.specific_tools.gmsl_tools import polynomialGLS, polynomialOLS 
+from ASELSU.specific_tools.WP85.covariance_matrix import make_covariance_matrix
+from ASELSU.specific_tools.WP85.gmsl_tools import polynomialGLS, polynomialOLS 
 from ASELSU.common_tools.time_tools import decimalyears_to_julianday_array
 
 cmap_div = palettable.scientific.diverging.Vik_20.mpl_colormap
