@@ -11,7 +11,7 @@ try:
 except:
     CLoader, CDumper = Loader, Dumper
 
-random_noise_fraction_std = 1.e-6
+random_noise_fraction_std = 1.e-3
 
 def load_yaml(filename, env_vars=False, complicated_input=False):
     with open(filename) as descr:
