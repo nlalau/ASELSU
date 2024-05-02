@@ -137,7 +137,36 @@ def nearest_positive_definite_matrix(A):
         k += 1
 
     return A3
+
+def is_positive_definite(B):
+    """Returns true when input is positive-definite, via Cholesky"""
+    try:
+        _ = la.cholesky(B)
+        return True
+    except la.LinAlgError:
+        return False
     
+###############################
+
+def gaussian_int(tdeb, tend, taim, period, n=1000):
+    t = np.linspace(np.max([tdeb,taim-10.*period]),np.min([tend,taim+10.*period]),n)
+    return np.trapz(np.exp(-0.5*((t-taim)/period)**2), x=t)
+    
+    
+def random_corr_int(T, period, n=1000, empirical=False):
+    t = np.linspace(0,T,n)
+    timeMatrix = np.tile(t,(len(t),1))
+    if empirical:
+        gen_covar = ErrorCovariance(t, matrix=np.exp(-0.5*((timeMatrix-timeMatrix.T)/period)**2))
+        gen_covar.add_randomNoise(fraction=random_noise_fraction_std)
+        matrix = np.dot(np.linalg.cholesky(gen_covar.covar), np.random.randn(n, 1000))
+        return np.sum((np.sum(matrix,axis=0)/(1.*n))**2)/1000.
+    else:
+        raise Exception('No analytical evaluation of this value is available yet...')
+        
+
+####################################################
+
 class ErrorCovariance():
     '''
     a class to provide error covariance matrix implementation
