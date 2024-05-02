@@ -459,7 +459,20 @@ class ErrorCovariance():
         else:
             return np.where(self.times >= date)[0][0]
             
-
+    @staticmethod
+    def propagate_bounds(matrix_in, idmin, idmax, tot_size):
+        matrix_out = np.zeros((tot_size, tot_size)).astype(np.float64)
+        matrix_out[idmin:idmax,idmin:idmax] = matrix_in
+        matrix_out[0:idmin, idmin:idmax] = np.tile(matrix_in[0,:], (idmin,1))
+        matrix_out[idmax:, idmin:idmax] = np.tile(matrix_in[-1,:], (tot_size-idmax,1))
+        matrix_out[idmin:idmax, 0:idmin] = np.tile(matrix_in[:,0], (idmin,1)).T
+        matrix_out[idmin:idmax, idmax:] = np.tile(matrix_in[:,-1], (tot_size-idmax,1)).T
+        matrix_out[0:idmin,0:idmin] = matrix_in[0,0]
+        matrix_out[0:idmin,idmax:] = matrix_in[0,-1]
+        matrix_out[idmax:,0:idmin] = matrix_in[-1,0]
+        matrix_out[idmax:,idmax:] = matrix_in[-1,-1]
+        return matrix_out
+        
 
 def make_covariance_matrix(err0, t, individual_errors=False, add_diagonal_noise_fraction=random_noise_fraction_std, check_definite_positive=True, method_def_pos='diagonal'):
     
