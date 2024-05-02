@@ -3,7 +3,15 @@ import palettable
 import matplotlib.colors as colors
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+from matplotlib.ticker import MultipleLocator
+import matplotlib.dates as mdates
 import numpy as np 
+from datetime import datetime,timedelta
+from scipy.interpolate import griddata,interp1d
+
+from ASELSU.specific_tools.covariance_matrix import make_covariance_matrix
+from ASELSU.specific_tools.gmsl_tools import polynomialGLS, polynomialOLS 
+from ASELSU.common_tools.time_tools import decimalyears_to_julianday_array
 
 cmap_div = palettable.scientific.diverging.Vik_20.mpl_colormap
 cmap_seq = palettable.scientific.sequential.Imola_20.mpl_colormap
@@ -464,4 +472,83 @@ def timeserie_plot(time_vec, msl,msl_orig,covar,lGLS,label, lGLS_2=None,label2=N
     ax.legend(fontsize=12, loc='upper left', fancybox=True, shadow=True)
     if output_path!=None:
         plt.savefig(output_path, dpi=600, bbox_inches = 'tight', pad_inches = 0)
+    plt.show()
+
+def plot_covar(covar, time_vec, name, ymin=None, ymax=None, ngen=30, lim=None, ylim=None):
+    dates = np.array([datetime(1950,1,1) + timedelta(el) for el in time_vec])
+    var = covar #*10000.
+    
+    nice_fonts = {
+        "font.family": "serif",
+        #"font.weight":"bold",
+        "axes.labelsize": 10,
+        "font.size": 10,
+        "legend.fontsize": 8,
+        "xtick.labelsize": 8,
+        "ytick.labelsize": 8,
+        }
+
+    mpl.rcParams.update(nice_fonts)
+    width = 482
+    fig = plt.figure(figsize=(10, 8))
+    
+    # Matrice covariance 
+    ax = fig.add_subplot(2, 2, 2) # 2 rows, 2 column, 1er plot
+    if lim is None:
+        vlim = np.max(np.abs(var))
+    else:
+        vlim = lim
+    m = ax.pcolormesh(var, cmap='RdBu_r', vmin=-vlim, vmax=vlim)
+
+    # Colorbar
+    cb = fig.colorbar(m)
+    cb.ax.get_yaxis().labelpad = 15
+    cb.ax.tick_params(labelsize=8)
+    cb.ax.set_ylabel('Covariance of errors', rotation=270)
+
+    #Affichage des dates 
+    time=[]
+    time.append('')
+    for i in range(1, len(dates), 111):
+        time.append(dates[i])
+    majorLocator = MultipleLocator(111)
+    ax.xaxis.set_major_locator(majorLocator)
+    ax.set_xticklabels([str(l)[0:4] for l in time], size='medium')
+    ax.yaxis.set_major_locator(majorLocator)
+    ax.set_yticklabels([str(l)[0:4] for l in time], size='medium')
+    ax.tick_params(labelsize=8)
+
+    # Uncertainty 
+    ax = fig.add_subplot(2, 2, 1) # 2 rows, 2 column, 2e plot
+    if ymin is None:
+        ymin = np.min(np.sqrt(np.diag(var)))
+        ymax = np.max(np.sqrt(np.diag(var)))
+    else:
+        ymin = ymin
+        ymax = ymax
+    ax.set_ylim([ymin, ymax])
+    plt.plot(dates, np.sqrt(np.diag(var))) 
+    plt.ylabel('Uncertainty envelope')
+    ax.xaxis.set_major_locator(mdates.YearLocator(5))
+    ax.xaxis.set_minor_locator(mdates.YearLocator())   
+    ax.tick_params(labelsize=8)
+
+    # Spread 
+    ax = fig.add_subplot(2, 2, 4) # 2 rows, 2 column, 3e plot
+    A = np.dot(np.linalg.cholesky(covar), np.random.randn(len(time_vec), ngen))
+
+    if ylim is None:
+        ylim = np.max(np.abs(A))
+    else:
+        ylim = ylim 
+        
+    for ii in range(ngen):
+        plt.plot(dates, A[:,ii])
+
+    ax.set_ylim([-ylim, ylim])
+    ax.xaxis.set_major_locator(mdates.YearLocator(5))
+    ax.xaxis.set_minor_locator(mdates.YearLocator())   
+    ax.tick_params(labelsize=8)
+
+    #plt.tight_layout()
     plt.show()
