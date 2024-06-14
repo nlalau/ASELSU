@@ -35,15 +35,15 @@ def load_environment_WP85():
 
 def load_data_WP85():
   print("Load GMSL timeserie\n")
-  !gdown --id {"1sWWo6zlh3qYB13zOKneiklBWhsgT8XWW"} -O MSL_aviso.nc >> log.txt
+  run_command("gdown --id {"1sWWo6zlh3qYB13zOKneiklBWhsgT8XWW"} -O MSL_aviso.nc")
   gmsl_file = 'MSL_aviso.nc'
 
   print("Load TOPEX-A correction\n")
-  !gdown --id {"1e_r15fM16UwzmkqcxS4OUhDvrQ3U21fl"} -O j3_wtc_drift_correction_cdr_al_s3a.nc >> log.txt
+  run_command("gdown --id {"1e_r15fM16UwzmkqcxS4OUhDvrQ3U21fl"} -O j3_wtc_drift_correction_cdr_al_s3a.nc")
   tpa_corr_file = 'MSL_Aviso_Correction_GMSL_TPA.nc'
 
   print("Load Jason-3 correction\n")
-  !gdown --id {"1HQq52w2NrM8Xsm0Nsye4Q7BEHAJhUa07"} -O j3_wtc_drift_correction_cdr_al_s3a.nc >> log.txt
+  run_command("gdown --id {"1HQq52w2NrM8Xsm0Nsye4Q7BEHAJhUa07"} -O j3_wtc_drift_correction_cdr_al_s3a.nc")
   j3_corr_file = 'j3_wtc_drift_correction_cdr_al_s3a.nc'
 
   print("Load table of budget errors\n")
