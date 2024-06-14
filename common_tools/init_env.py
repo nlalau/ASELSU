@@ -2,6 +2,8 @@ import os
 import sys
 from subprocess import check_call
 import requests
+import matplotlib as mpl
+import gdown
 
 def config_plot():
     nice_fonts = {
