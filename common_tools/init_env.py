@@ -22,7 +22,6 @@ def load_environment_WP85():
   !conda install -c conda-forge esmpy >> log.txt
   print('....loading....')
   !conda install -c conda-forge xesmf >> log.txt
-  !git clone https://github.com/nlalau/ASELSU.git >> log.txt
   !git clone https://github.com/CNES/lenapy.git >> log.txt
   !pip install lenapy/. >> log.txt
   print('.... Done')
