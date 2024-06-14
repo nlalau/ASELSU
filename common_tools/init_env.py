@@ -1,3 +1,7 @@
+import os
+import sys
+from subprocess import check_call
+
 def config_plot():
     nice_fonts = {
       "font.family": "serif",
@@ -14,17 +18,19 @@ def config_plot():
     mpl.rcParams.update(nice_fonts)
 
 def load_environment_WP85():
-  print('Environment loading....')
-  !pip install netCDF4 gdown palettable >> log.txt
-  !pip install -q condacolab >> log.txt
-  import condacolab
-  condacolab.install()
-  !conda install -c conda-forge esmpy >> log.txt
-  print('....loading....')
-  !conda install -c conda-forge xesmf >> log.txt
-  !git clone https://github.com/CNES/lenapy.git >> log.txt
-  !pip install lenapy/. >> log.txt
-  print('.... Done')
+    print('Environment loading....')
+    run_command("pip install netCDF4 gdown palettable")
+    run_command("pip install -q condacolab")
+    import condacolab
+    condacolab.install()
+    run_command("conda install -c conda-forge esmpy -y")
+    print('....loading....')
+    run_command("conda install -c conda-forge xesmf -y")
+    
+    # Clone the repository and install lenapy
+    run_command("git clone https://github.com/CNES/lenapy.git")
+    run_command("pip install lenapy/.")
+    print('.... Done')
 
 
 def load_data_WP85():
