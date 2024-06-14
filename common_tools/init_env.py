@@ -18,6 +18,10 @@ def config_plot():
     
     mpl.rcParams.update(nice_fonts)
 
+def run_command(command):
+    with open("log.txt", "a") as log_file:
+        check_call(command, shell=True, stdout=log_file, stderr=log_file)
+
 def load_environment_WP85():
     print('Environment loading....')
     run_command("pip install netCDF4 gdown palettable")
