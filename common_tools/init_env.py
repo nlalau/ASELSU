@@ -10,9 +10,9 @@ def config_plot():
       "xtick.labelsize": 14,
       "ytick.labelsize": 14,
       }
+    
+    mpl.rcParams.update(nice_fonts)
 
-  mpl.rcParams.update(nice_fonts)
-  
 def load_environment_WP85():
   print('Environment loading....')
   !pip install netCDF4 gdown palettable >> log.txt
